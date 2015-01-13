@@ -1,165 +1,88 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project default="create_run_jar_de_fr_en" name="Create Runnable Jar for Project KOST-Val DE, FR, EN">
-	<!--ANT 1.7 is required                                        -->
-	<target name="create_run_jar_de_fr_en">
+<project basedir="." default="build" name="KOST-Val">
+    <property environment="env"/>
+    <property name="debuglevel" value="source,lines,vars"/>
+    <property name="target" value="1.6"/>
+    <property name="source" value="1.6"/>
+    <property name="source_encoding" value="ISO-8859-1"/>
+
+
+    <path id="build.classpath">
+        <pathelement location="target/classes"/>
+        <fileset dir="${basedir}/">
+            <include name="lib/*.jar"/>
+        </fileset>
+    </path>
+
+    <pathconvert property="mf.classpath" pathsep=" ">
+        <path refid="build.classpath"/>
+        <mapper>
+            <chainedmapper>
+                <flattenmapper/>
+                <globmapper from="*.jar" to="lib/*.jar"/>
+            </chainedmapper>
+        </mapper>
+    </pathconvert>
+
+    <target name="init">
+        <mkdir dir="target/classes"/>
+        <copy includeemptydirs="false" todir="target/classes">
+            <fileset dir="src/main/java">
+                <exclude name="**/*.launch"/>
+                <exclude name="**/*.java"/>
+            </fileset>
+        </copy>
+        <copy includeemptydirs="false" todir="target/classes">
+            <fileset dir="src/main/resources">
+                <exclude name="**/*.launch"/>
+                <exclude name="**/*.java"/>
+            </fileset>
+        </copy>
+
+		<copy file="README.md" todir="target/classes"/>
+    </target>
+
+    <target name="clean">
+        <delete dir="target/classes"/>
+    </target>
+
+    <target depends="clean" name="cleanall"/>
+
+    <target depends="init" name="build-project">
+        <echo message="${ant.project.name}: ${ant.file}"/>
+        <javac includeantruntime="false" debug="true" debuglevel="${debuglevel}" destdir="target/classes" source="${source}" target="${target}" encoding="${source_encoding}">
+            <src path="src/main/java"/>
+            <src path="src/main/resources"/>
+            <classpath refid="build.classpath"/>
+        </javac>
+    </target>
+
+    <target name="build" depends="build-project">
+
 		<!--Kopiere de_messages.properties in target und erstelle kostval_de.jar -->
-		<copy file="KOST-Val/src/main/resources/de_messages.properties" overwrite="true" tofile="KOST-Val/target/classes/messages.properties"/>
-		<jar destfile="../KOST-Val_TEST/kostval_de.jar">
+		<!-- TODO change this to resource bundle -->
+		<!-- <copy file="KOST-Val/src/main/resources/en_messages.properties" overwrite="true" tofile="KOST-Val/target/classes/messages.properties"/> -->
+		<jar destfile="target/KOST-Val/kostval.jar">
 			<manifest>
-				<attribute name="Main-Class" value="org.eclipse.jdt.internal.jarinjarloader.JarRsrcLoader"/>
-				<attribute name="Rsrc-Main-Class" value="ch.kostceco.tools.kostval.KOSTVal"/>
-				<attribute name="Class-Path" value="."/>
-				<attribute name="Rsrc-Class-Path" value="./ commons-configuration-1.6.jar log4j-1.2.12.jar spring-context-3.0.0.RELEASE.jar commons-logging-1.1.1.jar commons-lang-2.4.jar spring-beans-3.0.0.RELEASE.jar spring-core-3.0.0.RELEASE.jar spring-asm-3.0.0.RELEASE.jar spring-aop-3.0.0.RELEASE.jar spring-expression-3.0.0.RELEASE.jar spring-jdbc-3.0.0.RELEASE.jar spring-orm-3.0.0.RELEASE.jar spring-security-core-3.0.0.RELEASE.jar spring-test-3.0.0.RELEASE.jar spring-tx-3.0.0.RELEASE.jar commons-beanutils-1.7.0.jar commons-beanutils-core-1.8.0.jar commons-collections-3.2.1.jar commons-digester-1.8.jar commons-io-2.0.jar xml-apis-2.7.1.jar zip64file-1.0.jar xercesImpl-2.7.1.jar junit-4.4.jar jdom-2.0.0.jar zip64-1.0.jar JhoveApp-1.5.jar droid-core-5.0.3.jar droid-export-5.0.3.jar droid-export-interfaces-5.0.3.jar droid-help-5.0.3.jar droid-interfaces-5.0.3.jar droid-report-5.0.3.jar droid-report-interfaces-5.0.3.jar droid-results-5.0.3.jar VALA-4.4.25.RELEASE.jar"/>
+				<attribute name="Main-Class" value="ch.kostceco.tools.kostval.KOSTVal"/>
+				<attribute name="Class-Path" value="${mf.classpath}"/>
 			</manifest>
-			<zipfileset dir="KOST-Val/target/classes"/>
-			<zipfileset dir="KOST-Val/lib" includes="commons-configuration-1.6.jar"/>
-			<zipfileset dir="KOST-Val/lib" includes="log4j-1.2.12.jar"/>
-			<zipfileset dir="KOST-Val/lib" includes="spring-context-3.0.0.RELEASE.jar"/>
-			<zipfileset dir="KOST-Val/lib" includes="commons-logging-1.1.1.jar"/>
-			<zipfileset dir="KOST-Val/lib" includes="commons-lang-2.4.jar"/>
-			<zipfileset dir="KOST-Val/lib" includes="spring-beans-3.0.0.RELEASE.jar"/>
-			<zipfileset dir="KOST-Val/lib" includes="spring-core-3.0.0.RELEASE.jar"/>
-			<zipfileset dir="KOST-Val/lib" includes="spring-asm-3.0.0.RELEASE.jar"/>
-			<zipfileset dir="KOST-Val/lib" includes="spring-aop-3.0.0.RELEASE.jar"/>
-			<zipfileset dir="KOST-Val/lib" includes="spring-expression-3.0.0.RELEASE.jar"/>
-			<zipfileset dir="KOST-Val/lib" includes="spring-jdbc-3.0.0.RELEASE.jar"/>
-			<zipfileset dir="KOST-Val/lib" includes="spring-orm-3.0.0.RELEASE.jar"/>
-			<zipfileset dir="KOST-Val/lib" includes="spring-security-core-3.0.0.RELEASE.jar"/>
-			<zipfileset dir="KOST-Val/lib" includes="spring-test-3.0.0.RELEASE.jar"/>
-			<zipfileset dir="KOST-Val/lib" includes="spring-tx-3.0.0.RELEASE.jar"/>
-			<zipfileset dir="KOST-Val/lib" includes="commons-beanutils-1.7.0.jar"/>
-			<zipfileset dir="KOST-Val/lib" includes="commons-beanutils-core-1.8.0.jar"/>
-			<zipfileset dir="KOST-Val/lib" includes="commons-collections-3.2.1.jar"/>
-			<zipfileset dir="KOST-Val/lib" includes="commons-digester-1.8.jar"/>
-			<zipfileset dir="KOST-Val/lib" includes="commons-io-2.0.jar"/>
-			<zipfileset dir="KOST-Val/lib" includes="xml-apis-2.7.1.jar"/>
-			<zipfileset dir="KOST-Val/lib" includes="zip64file-1.0.jar"/>
-			<zipfileset dir="KOST-Val/lib" includes="xercesImpl-2.7.1.jar"/>
-			<zipfileset dir="KOST-Val/lib" includes="junit-4.4.jar"/>
-			<zipfileset dir="KOST-Val/lib" includes="jdom-2.0.0.jar"/>
-			<zipfileset dir="KOST-Val/lib" includes="zip64-1.0.jar"/>
-			<zipfileset dir="KOST-Val/lib" includes="JhoveApp-1.5.jar"/>
-			<zipfileset dir="KOST-Val/lib" includes="droid-core-5.0.3.jar"/>
-			<zipfileset dir="KOST-Val/lib" includes="droid-export-5.0.3.jar"/>
-			<zipfileset dir="KOST-Val/lib" includes="droid-export-interfaces-5.0.3.jar"/>
-			<zipfileset dir="KOST-Val/lib" includes="droid-help-5.0.3.jar"/>
-			<zipfileset dir="KOST-Val/lib" includes="droid-interfaces-5.0.3.jar"/>
-			<zipfileset dir="KOST-Val/lib" includes="droid-report-5.0.3.jar"/>
-			<zipfileset dir="KOST-Val/lib" includes="droid-report-interfaces-5.0.3.jar"/>
-			<zipfileset dir="KOST-Val/lib" includes="droid-results-5.0.3.jar"/>
-			<zipfileset dir="KOST-Val/lib" includes="VALA-4.4.25.RELEASE.jar"/>
+
+			<!-- Adding classes -->
+			<zipfileset dir="target/classes"/>
+
+			<!-- Adding libs -->
+			<!-- <zipgroupfileset dir="lib" includes="*.jar"/>-->
 		</jar>
-		<!--Kopiere fr_messages.properties in target und erstelle kostval_fr.jar -->
-		<copy file="KOST-Val/src/main/resources/fr_messages.properties" overwrite="true" tofile="KOST-Val/target/classes/messages.properties"/>
-		<jar destfile="../KOST-Val_TEST/kostval_fr.jar">
-			<manifest>
-				<attribute name="Main-Class" value="org.eclipse.jdt.internal.jarinjarloader.JarRsrcLoader"/>
-				<attribute name="Rsrc-Main-Class" value="ch.kostceco.tools.kostval.KOSTVal"/>
-				<attribute name="Class-Path" value="."/>
-				<attribute name="Rsrc-Class-Path" value="./ commons-configuration-1.6.jar log4j-1.2.12.jar spring-context-3.0.0.RELEASE.jar commons-logging-1.1.1.jar commons-lang-2.4.jar spring-beans-3.0.0.RELEASE.jar spring-core-3.0.0.RELEASE.jar spring-asm-3.0.0.RELEASE.jar spring-aop-3.0.0.RELEASE.jar spring-expression-3.0.0.RELEASE.jar spring-jdbc-3.0.0.RELEASE.jar spring-orm-3.0.0.RELEASE.jar spring-security-core-3.0.0.RELEASE.jar spring-test-3.0.0.RELEASE.jar spring-tx-3.0.0.RELEASE.jar commons-beanutils-1.7.0.jar commons-beanutils-core-1.8.0.jar commons-collections-3.2.1.jar commons-digester-1.8.jar commons-io-2.0.jar xml-apis-2.7.1.jar zip64file-1.0.jar xercesImpl-2.7.1.jar junit-4.4.jar jdom-2.0.0.jar zip64-1.0.jar JhoveApp-1.5.jar droid-core-5.0.3.jar droid-export-5.0.3.jar droid-export-interfaces-5.0.3.jar droid-help-5.0.3.jar droid-interfaces-5.0.3.jar droid-report-5.0.3.jar droid-report-interfaces-5.0.3.jar droid-results-5.0.3.jar VALA-4.4.25.RELEASE.jar"/>
-			</manifest>
-			<zipfileset dir="KOST-Val/target/classes"/>
-			<zipfileset dir="KOST-Val/lib" includes="commons-configuration-1.6.jar"/>
-			<zipfileset dir="KOST-Val/lib" includes="log4j-1.2.12.jar"/>
-			<zipfileset dir="KOST-Val/lib" includes="spring-context-3.0.0.RELEASE.jar"/>
-			<zipfileset dir="KOST-Val/lib" includes="commons-logging-1.1.1.jar"/>
-			<zipfileset dir="KOST-Val/lib" includes="commons-lang-2.4.jar"/>
-			<zipfileset dir="KOST-Val/lib" includes="spring-beans-3.0.0.RELEASE.jar"/>
-			<zipfileset dir="KOST-Val/lib" includes="spring-core-3.0.0.RELEASE.jar"/>
-			<zipfileset dir="KOST-Val/lib" includes="spring-asm-3.0.0.RELEASE.jar"/>
-			<zipfileset dir="KOST-Val/lib" includes="spring-aop-3.0.0.RELEASE.jar"/>
-			<zipfileset dir="KOST-Val/lib" includes="spring-expression-3.0.0.RELEASE.jar"/>
-			<zipfileset dir="KOST-Val/lib" includes="spring-jdbc-3.0.0.RELEASE.jar"/>
-			<zipfileset dir="KOST-Val/lib" includes="spring-orm-3.0.0.RELEASE.jar"/>
-			<zipfileset dir="KOST-Val/lib" includes="spring-security-core-3.0.0.RELEASE.jar"/>
-			<zipfileset dir="KOST-Val/lib" includes="spring-test-3.0.0.RELEASE.jar"/>
-			<zipfileset dir="KOST-Val/lib" includes="spring-tx-3.0.0.RELEASE.jar"/>
-			<zipfileset dir="KOST-Val/lib" includes="commons-beanutils-1.7.0.jar"/>
-			<zipfileset dir="KOST-Val/lib" includes="commons-beanutils-core-1.8.0.jar"/>
-			<zipfileset dir="KOST-Val/lib" includes="commons-collections-3.2.1.jar"/>
-			<zipfileset dir="KOST-Val/lib" includes="commons-digester-1.8.jar"/>
-			<zipfileset dir="KOST-Val/lib" includes="commons-io-2.0.jar"/>
-			<zipfileset dir="KOST-Val/lib" includes="xml-apis-2.7.1.jar"/>
-			<zipfileset dir="KOST-Val/lib" includes="zip64file-1.0.jar"/>
-			<zipfileset dir="KOST-Val/lib" includes="xercesImpl-2.7.1.jar"/>
-			<zipfileset dir="KOST-Val/lib" includes="junit-4.4.jar"/>
-			<zipfileset dir="KOST-Val/lib" includes="jdom-2.0.0.jar"/>
-			<zipfileset dir="KOST-Val/lib" includes="zip64-1.0.jar"/>
-			<zipfileset dir="KOST-Val/lib" includes="JhoveApp-1.5.jar"/>
-			<zipfileset dir="KOST-Val/lib" includes="droid-core-5.0.3.jar"/>
-			<zipfileset dir="KOST-Val/lib" includes="droid-export-5.0.3.jar"/>
-			<zipfileset dir="KOST-Val/lib" includes="droid-export-interfaces-5.0.3.jar"/>
-			<zipfileset dir="KOST-Val/lib" includes="droid-help-5.0.3.jar"/>
-			<zipfileset dir="KOST-Val/lib" includes="droid-interfaces-5.0.3.jar"/>
-			<zipfileset dir="KOST-Val/lib" includes="droid-report-5.0.3.jar"/>
-			<zipfileset dir="KOST-Val/lib" includes="droid-report-interfaces-5.0.3.jar"/>
-			<zipfileset dir="KOST-Val/lib" includes="droid-results-5.0.3.jar"/>
-			<zipfileset dir="KOST-Val/lib" includes="VALA-4.4.25.RELEASE.jar"/>
-		</jar>
-		<!--Kopiere en_messages.properties in target und erstelle kostval_en.jar -->
-		<copy file="KOST-Val/src/main/resources/en_messages.properties" overwrite="true" tofile="KOST-Val/target/classes/messages.properties"/>
-		<jar destfile="../KOST-Val_TEST/kostval_en.jar">
-			<manifest>
-				<attribute name="Main-Class" value="org.eclipse.jdt.internal.jarinjarloader.JarRsrcLoader"/>
-				<attribute name="Rsrc-Main-Class" value="ch.kostceco.tools.kostval.KOSTVal"/>
-				<attribute name="Class-Path" value="."/>
-				<attribute name="Rsrc-Class-Path" value="./ commons-configuration-1.6.jar log4j-1.2.12.jar spring-context-3.0.0.RELEASE.jar commons-logging-1.1.1.jar commons-lang-2.4.jar spring-beans-3.0.0.RELEASE.jar spring-core-3.0.0.RELEASE.jar spring-asm-3.0.0.RELEASE.jar spring-aop-3.0.0.RELEASE.jar spring-expression-3.0.0.RELEASE.jar spring-jdbc-3.0.0.RELEASE.jar spring-orm-3.0.0.RELEASE.jar spring-security-core-3.0.0.RELEASE.jar spring-test-3.0.0.RELEASE.jar spring-tx-3.0.0.RELEASE.jar commons-beanutils-1.7.0.jar commons-beanutils-core-1.8.0.jar commons-collections-3.2.1.jar commons-digester-1.8.jar commons-io-2.0.jar xml-apis-2.7.1.jar zip64file-1.0.jar xercesImpl-2.7.1.jar junit-4.4.jar jdom-2.0.0.jar zip64-1.0.jar JhoveApp-1.5.jar droid-core-5.0.3.jar droid-export-5.0.3.jar droid-export-interfaces-5.0.3.jar droid-help-5.0.3.jar droid-interfaces-5.0.3.jar droid-report-5.0.3.jar droid-report-interfaces-5.0.3.jar droid-results-5.0.3.jar VALA-4.4.25.RELEASE.jar"/>
-			</manifest>
-			<zipfileset dir="KOST-Val/target/classes"/>
-			<zipfileset dir="KOST-Val/lib" includes="commons-configuration-1.6.jar"/>
-			<zipfileset dir="KOST-Val/lib" includes="log4j-1.2.12.jar"/>
-			<zipfileset dir="KOST-Val/lib" includes="spring-context-3.0.0.RELEASE.jar"/>
-			<zipfileset dir="KOST-Val/lib" includes="commons-logging-1.1.1.jar"/>
-			<zipfileset dir="KOST-Val/lib" includes="commons-lang-2.4.jar"/>
-			<zipfileset dir="KOST-Val/lib" includes="spring-beans-3.0.0.RELEASE.jar"/>
-			<zipfileset dir="KOST-Val/lib" includes="spring-core-3.0.0.RELEASE.jar"/>
-			<zipfileset dir="KOST-Val/lib" includes="spring-asm-3.0.0.RELEASE.jar"/>
-			<zipfileset dir="KOST-Val/lib" includes="spring-aop-3.0.0.RELEASE.jar"/>
-			<zipfileset dir="KOST-Val/lib" includes="spring-expression-3.0.0.RELEASE.jar"/>
-			<zipfileset dir="KOST-Val/lib" includes="spring-jdbc-3.0.0.RELEASE.jar"/>
-			<zipfileset dir="KOST-Val/lib" includes="spring-orm-3.0.0.RELEASE.jar"/>
-			<zipfileset dir="KOST-Val/lib" includes="spring-security-core-3.0.0.RELEASE.jar"/>
-			<zipfileset dir="KOST-Val/lib" includes="spring-test-3.0.0.RELEASE.jar"/>
-			<zipfileset dir="KOST-Val/lib" includes="spring-tx-3.0.0.RELEASE.jar"/>
-			<zipfileset dir="KOST-Val/lib" includes="commons-beanutils-1.7.0.jar"/>
-			<zipfileset dir="KOST-Val/lib" includes="commons-beanutils-core-1.8.0.jar"/>
-			<zipfileset dir="KOST-Val/lib" includes="commons-collections-3.2.1.jar"/>
-			<zipfileset dir="KOST-Val/lib" includes="commons-digester-1.8.jar"/>
-			<zipfileset dir="KOST-Val/lib" includes="commons-io-2.0.jar"/>
-			<zipfileset dir="KOST-Val/lib" includes="xml-apis-2.7.1.jar"/>
-			<zipfileset dir="KOST-Val/lib" includes="zip64file-1.0.jar"/>
-			<zipfileset dir="KOST-Val/lib" includes="xercesImpl-2.7.1.jar"/>
-			<zipfileset dir="KOST-Val/lib" includes="junit-4.4.jar"/>
-			<zipfileset dir="KOST-Val/lib" includes="jdom-2.0.0.jar"/>
-			<zipfileset dir="KOST-Val/lib" includes="zip64-1.0.jar"/>
-			<zipfileset dir="KOST-Val/lib" includes="JhoveApp-1.5.jar"/>
-			<zipfileset dir="KOST-Val/lib" includes="droid-core-5.0.3.jar"/>
-			<zipfileset dir="KOST-Val/lib" includes="droid-export-5.0.3.jar"/>
-			<zipfileset dir="KOST-Val/lib" includes="droid-export-interfaces-5.0.3.jar"/>
-			<zipfileset dir="KOST-Val/lib" includes="droid-help-5.0.3.jar"/>
-			<zipfileset dir="KOST-Val/lib" includes="droid-interfaces-5.0.3.jar"/>
-			<zipfileset dir="KOST-Val/lib" includes="droid-report-5.0.3.jar"/>
-			<zipfileset dir="KOST-Val/lib" includes="droid-report-interfaces-5.0.3.jar"/>
-			<zipfileset dir="KOST-Val/lib" includes="droid-results-5.0.3.jar"/>
-			<zipfileset dir="KOST-Val/lib" includes="VALA-4.4.25.RELEASE.jar"/>
-		</jar>
-		<!--Kopiere alle benötigten Ordner und Dokumente -->
-		<copy todir="../KOST-Val_TEST/configuration">
-			<fileset dir="KOST-Val/src/main/resources_notJar/configuration"/>
+
+		<copy todir="target/KOST-Val/lib">
+			<fileset dir="lib" includes="*.jar"/>
 		</copy>
-		<copy todir="../KOST-Val_TEST/doc">
-			<fileset dir="KOST-Val/src/main/resources_notJar/doc"/>
+
+		<!-- Kopiere alle benötigten Ordner und Dokumente -->
+		<!-- Copy all necessary folders and documents -->
+		<copy todir="target/KOST-Val/">
+			<fileset dir="src/main/resources_notJar/" includes="**"/>
 		</copy>
-		<copy todir="../KOST-Val_TEST/license">
-			<fileset dir="KOST-Val/src/main/resources_notJar/license"/>
-		</copy>
-		<copy todir="../KOST-Val_TEST/resources">
-			<fileset dir="KOST-Val/src/main/resources_notJar/resources"/>
-		</copy>
-		<copy file="KOST-Val/src/main/resources_notJar/KOST-Val_de.exe" todir="../KOST-Val_TEST"/>
-		<copy file="KOST-Val/src/main/resources_notJar/KOST-Val_fr.exe" todir="../KOST-Val_TEST"/>
-		<copy file="KOST-Val/src/main/resources_notJar/KOST-Val_en.exe" todir="../KOST-Val_TEST"/>
-		<copy file="KOST-Val/src/main/resources_notJar/PdfValidatorAPI.dll" todir="../KOST-Val_TEST"/>
-		<copy file="KOST-Val/src/main/resources/de_messages.properties" overwrite="true" tofile="KOST-Val/target/classes/messages.properties"/>
 	</target>
 </project>

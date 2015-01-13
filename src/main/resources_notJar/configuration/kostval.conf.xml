@@ -3,7 +3,7 @@
 	<pathtologfile>logs</pathtologfile>
 	<pathtoworkdir>temp_KOST-Val</pathtoworkdir>
 	<pathtodiagnose>diagnose</pathtodiagnose>
-	<pathtojhoveconfig>configuration\jhove.conf</pathtojhoveconfig>
+	<pathtojhoveconfig>configuration/jhove.conf</pathtojhoveconfig>
 	<pdfa>
 		<!--no verwenden wenn pdfa nicht validiert werden soll, ansonsten yes-->
 		<pdfavalidation>yes</pdfavalidation>
@@ -98,7 +98,7 @@
 		<allowedlengthofpaths>179</allowedlengthofpaths>
 		<allowedlengthoffiles>40</allowedlengthoffiles>
 		<allowedsipname>SIP_[1-2][0-9]{3}[0-1][0-9][0-3][0-9]_\\w{3}</allowedsipname>
-		<pathtodroidsignature>configuration\KaD_SignatureFile_V70.01.xml</pathtodroidsignature>
+		<pathtodroidsignature>configuration/KaD_SignatureFile_V70.01.xml</pathtodroidsignature>
 		<allowedversionbar1>1</allowedversionbar1>
 		<!--0 / 1-->
 		<allowedversionbar4ech1>1</allowedversionbar4ech1>
